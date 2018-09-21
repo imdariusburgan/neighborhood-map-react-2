@@ -3,7 +3,7 @@ import "./App.css";
 
 // This function will load the Google Maps API script in the DOM
 // This code was inspired from https://stackoverflow.com/questions/42847126/script-load-in-react
-function loadScriptUrl(url) {
+function loadScriptTag(url) {
   let scriptTag = document.createElement("script");
   scriptTag.src = url;
   scriptTag.async = true;
@@ -12,6 +12,13 @@ function loadScriptUrl(url) {
 }
 
 class App extends Component {
+  // This function loads the Google Maps API script tag
+  loadMap = () => {
+    loadScriptTag(
+      "https://maps.googleapis.com/maps/api/js?key=AIzaSyDwmWMef1tFyoOOz8DiWqZdVwetRP6TemQ&callback=initMap"
+    );
+  };
+
   // This function initializes a new Google Maps
   initMap = () => {
     let map = new window.google.maps.Map(document.getElementById("map"), {
