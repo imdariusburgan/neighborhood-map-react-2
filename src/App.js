@@ -2,16 +2,19 @@ import React, { Component } from "react";
 import "./App.css";
 
 class App extends Component {
+  // This function initializes a new Google Maps
+  initMap = () => {
+    map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat: -34.397, lng: 150.644 },
+      zoom: 8
+    });
+  };
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <h1>Hello World</h1>
+        <div id="map" />
       </div>
     );
   }
