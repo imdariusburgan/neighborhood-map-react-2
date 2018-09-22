@@ -24,8 +24,9 @@ class App extends Component {
 
   // This function initializes a new Google Maps
   initMap = () => {
+    const cleveland = { lat: 41.505493, lng: -81.68129 };
     new window.google.maps.Map(document.getElementById("map"), {
-      center: { lat: 41.505493, lng: -81.68129 },
+      center: cleveland,
       zoom: 12
     });
   };
