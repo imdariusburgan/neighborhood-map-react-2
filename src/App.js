@@ -12,6 +12,10 @@ function loadScriptTag(url) {
 }
 
 class App extends Component {
+  state = {
+    allLocations: []
+  };
+
   // This function loads the Google Maps API script tag
   loadMap = () => {
     loadScriptTag(
@@ -39,8 +43,41 @@ class App extends Component {
     });
   };
 
+  getFoursquareLocations = () => {
+    const parameters = {
+      clientID: "EPYY3NEHXV02O5I1VVCTDKHCN2B3BYSVVKYIPGKGZUAEFXHL",
+      clientSecret: "PM0DGZ2THHKNODWVNABPG0AJMMARWVU1CVCPGLJSMMORLIFY",
+      near: "cleveland",
+      query: "food",
+      version: "20180921",
+      limit: "10"
+    };
+    // GET the API
+    fetch(
+      `https://api.foursquare.com/v2/venues/explore?client_id=${
+        parameters.clientID
+      }&client_secret=${parameters.clientSecret}&near=${
+        parameters.near
+      }&query=${parameters.query}&v=${parameters.version}&limit=${
+        parameters.limit
+      }`
+    )
+      // Turn the response into JSON
+      .then(response => {
+        return response.json();
+      })
+      // Take the location data from the JSON and store it in the state
+      .then(data => {
+        this.setState({ allLocations: data.response.groups[0].items });
+      })
+      .catch(error => {
+        console.log(`There was an error: ${error}`);
+      });
+  };
+
   componentDidMount() {
     this.loadMap();
+    this.getFoursquareLocations();
   }
 
   render() {
