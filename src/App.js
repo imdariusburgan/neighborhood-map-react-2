@@ -25,8 +25,8 @@ class App extends Component {
   // This function initializes a new Google Maps
   initMap = () => {
     new window.google.maps.Map(document.getElementById("map"), {
-      center: { lat: -34.397, lng: 150.644 },
-      zoom: 8
+      center: { lat: 41.505493, lng: -81.68129 },
+      zoom: 12
     });
   };
 
