@@ -18,7 +18,7 @@ class App extends Component {
       "https://maps.googleapis.com/maps/api/js?key=AIzaSyDwmWMef1tFyoOOz8DiWqZdVwetRP6TemQ&callback=initMap"
     );
     // The script tag url above was searching for the 'initMap' callback function in the window object.
-    // This line sets the window's 'initMap' function to match our 'initMap' function
+    // This line sets the window object's 'initMap' function to match our 'initMap' function
     window.initMap = this.initMap;
   };
 
