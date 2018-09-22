@@ -37,15 +37,30 @@ class App extends Component {
 
     // This part of the initMap function sets the markers
     this.state.allLocations.map(location => {
-      new window.google.maps.Marker({
+      // This part creates the markers
+      let marker = new window.google.maps.Marker({
         map: map,
         position: {
           lat: location.venue.location.lat,
           lng: location.venue.location.lng
         },
-        title: location.venue.name
+        title: location.venue.name,
+        animation: null
       });
+      // This part adds a click event listener to marker
+      marker.addListener("click", () => {
+        this.markerAnimationTrigger(marker);
+      });
+      return null;
     });
+  };
+
+  markerAnimationTrigger = marker => {
+    if (marker.getAnimation() !== null) {
+      marker.setAnimation(null);
+    } else {
+      marker.setAnimation(window.google.maps.Animation.BOUNCE);
+    }
   };
 
   getFoursquareLocations = () => {
