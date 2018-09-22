@@ -17,20 +17,26 @@ class App extends Component {
     loadScriptTag(
       "https://maps.googleapis.com/maps/api/js?key=AIzaSyDwmWMef1tFyoOOz8DiWqZdVwetRP6TemQ&callback=initMap"
     );
+    // The script tag url above was searching for the 'initMap' callback function in the window object.
+    // This line sets the window's 'initMap' function to match our 'initMap' function
+    window.initMap = this.initMap;
   };
 
   // This function initializes a new Google Maps
   initMap = () => {
-    let map = new window.google.maps.Map(document.getElementById("map"), {
+    new window.google.maps.Map(document.getElementById("map"), {
       center: { lat: -34.397, lng: 150.644 },
       zoom: 8
     });
   };
 
+  componentDidMount() {
+    this.loadMap();
+  }
+
   render() {
     return (
       <div className="App">
-        <h1>Hello World</h1>
         <div id="map" />
       </div>
     );
