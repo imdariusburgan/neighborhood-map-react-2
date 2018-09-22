@@ -25,8 +25,9 @@ class App extends Component {
     // This line sets the window object's 'initMap' function to match our 'initMap' function
     window.initMap = this.initMap;
   };
-
-  // This function initializes a new Google Maps and sets markers
+  /********************************************************************
+   * This function initializes a new Google Maps and sets markers
+   ********************************************************************/
   initMap = () => {
     // This part of the initMap function sets the map
     const cleveland = { lat: 41.505493, lng: -81.68129 };
@@ -55,6 +56,7 @@ class App extends Component {
     });
   };
 
+  // This function sets a marker's animation if there is none.
   markerAnimationTrigger = marker => {
     if (marker.getAnimation() !== null) {
       marker.setAnimation(null);
