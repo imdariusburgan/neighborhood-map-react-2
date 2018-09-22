@@ -54,8 +54,13 @@ class App extends Component {
       // This part adds a click event listener to marker
       marker.addListener("click", () => {
         this.markerAnimationTrigger(marker);
+        infowindow.open(map, marker);
       });
       return null;
+    });
+
+    let infowindow = new window.google.maps.InfoWindow({
+      content: "hi"
     });
   };
 
