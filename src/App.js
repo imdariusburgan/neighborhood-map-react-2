@@ -22,12 +22,20 @@ class App extends Component {
     window.initMap = this.initMap;
   };
 
-  // This function initializes a new Google Maps
+  // This function initializes a new Google Maps and sets markers
   initMap = () => {
+    // This part of the initMap function sets the map
     const cleveland = { lat: 41.505493, lng: -81.68129 };
-    new window.google.maps.Map(document.getElementById("map"), {
+    let map = new window.google.maps.Map(document.getElementById("map"), {
       center: cleveland,
       zoom: 12
+    });
+
+    // This part of the initMap function sets the markers
+    let marker = new window.google.maps.Marker({
+      map: map,
+      position: { lat: 41.49409, lng: -81.669852 },
+      title: "Hello World!"
     });
   };
 
