@@ -36,10 +36,15 @@ class App extends Component {
     });
 
     // This part of the initMap function sets the markers
-    let marker = new window.google.maps.Marker({
-      map: map,
-      position: { lat: 41.49409, lng: -81.669852 },
-      title: "Hello World!"
+    this.state.allLocations.map(location => {
+      new window.google.maps.Marker({
+        map: map,
+        position: {
+          lat: location.venue.location.lat,
+          lng: location.venue.location.lng
+        },
+        title: location.venue.name
+      });
     });
   };
 
@@ -70,13 +75,17 @@ class App extends Component {
       .then(data => {
         this.setState({ allLocations: data.response.groups[0].items });
       })
+      // Once locations are stored in the state, load the map
+      .then(() => {
+        this.loadMap();
+      })
+      // Log errors if any
       .catch(error => {
         console.log(`There was an error: ${error}`);
       });
   };
 
   componentDidMount() {
-    this.loadMap();
     this.getFoursquareLocations();
   }
 
