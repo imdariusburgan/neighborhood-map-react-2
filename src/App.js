@@ -26,10 +26,13 @@ class App extends Component {
     window.initMap = this.initMap;
   };
   /********************************************************************
-   * This function initializes a new Google Maps and sets markers
+   * THIS FUNCTION INITIALIZES THE GOOGLE MAP
    ********************************************************************/
   initMap = () => {
-    // This part of the initMap function sets the map
+    // This part of the initMap function sets the map.
+    // Parameters:
+    // - Center: This should be an object with a lat variable (latitude) and lng variable (longitude)
+    // - Zoom: This should be a number. Number 1 is a view of the world, number 20 is a close view of streets and buildings
     const cleveland = { lat: 41.505493, lng: -81.68129 };
     let map = new window.google.maps.Map(document.getElementById("map"), {
       center: cleveland,
