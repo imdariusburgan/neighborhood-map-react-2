@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 
-// This function will load the Google Maps API script in the DOM
+// This function will load scripts in the DOM
 // This code was inspired from https://stackoverflow.com/questions/42847126/script-load-in-react
 function loadScriptTag(url) {
   let scriptTag = document.createElement("script");
@@ -11,13 +11,25 @@ function loadScriptTag(url) {
   document.body.appendChild(scriptTag);
 }
 
+// This function will load css in the DOM
+function loadCssTag(url) {
+  let cssTag = document.createElement("link");
+  cssTag.rel = "stylesheet";
+  cssTag.href = url;
+  let headTag = document.getElementsByTagName("head");
+  headTag[0].appendChild(cssTag);
+}
+
 class App extends Component {
   state = {
     allLocations: []
   };
 
   // This function loads the Google Maps API script tag
-  loadMap = () => {
+  loadTags = () => {
+    loadCssTag(
+      "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    );
     loadScriptTag(
       "https://maps.googleapis.com/maps/api/js?key=AIzaSyDwmWMef1tFyoOOz8DiWqZdVwetRP6TemQ&callback=initMap"
     );
@@ -25,9 +37,9 @@ class App extends Component {
     // This line sets the window object's 'initMap' function to match our 'initMap' function
     window.initMap = this.initMap;
   };
-  /********************************************************************
+  /************************************************
    * THIS FUNCTION INITIALIZES THE GOOGLE MAP
-   ********************************************************************/
+   ************************************************/
   initMap = () => {
     // This part of the initMap function sets the map.
     // Parameters:
@@ -63,6 +75,8 @@ class App extends Component {
       let infowindow = new window.google.maps.InfoWindow({
         content: contentString
       });
+
+      // I'm going to have to pass each location to another function in order to generate the list of markers, as well as trigger map marker animations when the corresponding list item is clicked
 
       return null;
     });
@@ -106,7 +120,7 @@ class App extends Component {
       })
       // Once locations are stored in the state, load the map
       .then(() => {
-        this.loadMap();
+        this.loadTags();
       })
       // Log errors if any
       .catch(error => {
