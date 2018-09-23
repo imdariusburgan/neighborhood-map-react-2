@@ -16,8 +16,8 @@ function loadCssTag(url) {
   let cssTag = document.createElement("link");
   cssTag.rel = "stylesheet";
   cssTag.href = url;
-  let headTag = document.getElementsByTagName("head");
-  headTag[0].appendChild(cssTag);
+  let styleTags = document.getElementsByTagName("style");
+  styleTags[0].parentNode.insertBefore(cssTag, styleTags[0]);
 }
 
 class App extends Component {
@@ -135,7 +135,18 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div id="map" />
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-md-4">
+              <h1>Neighborhood Map</h1>
+              <li>Marker 1</li>
+              <li>Marker 2</li>
+              <li>Marker 3</li>
+              <li>Marker 4</li>
+            </div>
+            <div id="map" className="col-md-8" />
+          </div>
+        </div>
       </div>
     );
   }
