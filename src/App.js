@@ -88,9 +88,12 @@ class App extends Component {
       return null;
     });
 
-    this.setState({ allMapMarkers: allCurrentMarkers });
     let infowindow = new window.google.maps.InfoWindow();
+    this.setState({ allMapMarkers: allCurrentMarkers });
+    this.setState({ infoWindow: infowindow });
   };
+
+  markerInfo;
 
   // This function sets a marker's animation if there is none.
   markerAnimationTrigger = marker => {
@@ -157,6 +160,8 @@ class App extends Component {
       this.state.allMapMarkers.map(marker => {
         if (this.state.clickedListItem === marker.title) {
           this.markerAnimationTrigger(marker);
+          this.state.infoWindow.setContent(marker.title);
+          this.state.infoWindow.open(this.state.map, marker);
         }
         return null;
       });
