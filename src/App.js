@@ -22,7 +22,10 @@ function loadCssTag(url) {
 
 class App extends Component {
   state = {
-    allLocations: []
+    allLocations: [],
+    map: {},
+    mapMarkers: [],
+    clickedListItem: ""
   };
 
   // This function loads the Google Maps API script tag
@@ -37,20 +40,28 @@ class App extends Component {
     // This line sets the window object's 'initMap' function to match our 'initMap' function
     window.initMap = this.initMap;
   };
+
   /************************************************
    * THIS FUNCTION INITIALIZES THE GOOGLE MAP
    ************************************************/
   initMap = () => {
-    // This part of the initMap function sets the map.
-    // Parameters:
-    // - Center: This should be an object with a lat variable (latitude) and lng variable (longitude)
-    // - Zoom: This should be a number. Number 1 is a view of the world, number 20 is a close view of streets and buildings
     const cleveland = { lat: 41.505493, lng: -81.68129 };
-    let map = new window.google.maps.Map(document.getElementById("map"), {
+    let createMap = new window.google.maps.Map(document.getElementById("map"), {
       center: cleveland,
       zoom: 12
     });
+    createMap.addListener("click", () => {
+      console.log("map was clicked");
+    });
+    this.setState({ map: createMap });
+    this.createMarkers(createMap);
+  };
 
+  /************************************************
+   * THIS FUNCTION ADDS THE MARKERS TO THE MAP
+   ************************************************/
+  createMarkers = map => {
+    let allCurrentMarkers = [];
     // This part of the initMap function sets the markers
     this.state.allLocations.map(location => {
       // This part creates the markers
@@ -64,22 +75,22 @@ class App extends Component {
         animation: null
       });
 
+      allCurrentMarkers.push(marker);
+
       // This part adds a click event listener to marker
       marker.addListener("click", () => {
         this.markerAnimationTrigger(marker);
+        infowindow.setContent(location.venue.name);
         infowindow.open(map, marker);
-      });
-
-      // This part adds functionality for an info-window
-      let contentString = `${location.venue.name}`;
-      let infowindow = new window.google.maps.InfoWindow({
-        content: contentString
       });
 
       // I'm going to have to pass each location to another function in order to generate the list of markers, as well as trigger map marker animations when the corresponding list item is clicked
 
       return null;
     });
+
+    this.setState({ allMapMarkers: allCurrentMarkers });
+    let infowindow = new window.google.maps.InfoWindow();
   };
 
   // This function sets a marker's animation if there is none.
@@ -132,19 +143,69 @@ class App extends Component {
     this.getFoursquareLocations();
   }
 
+  checkClickedListItem = () => {
+    new Promise(resolve => {
+      if (
+        this.state.clickedListItem !== "" &&
+        this.state.mapMarkers.length > 0
+      ) {
+        resolve();
+      }
+    }).then(() => {
+      this.state.mapMarkers.map(marker => {
+        if (this.state.clickedListItem === marker.title) {
+          this.markerAnimationTrigger(marker);
+        }
+        return null;
+      });
+    });
+  };
+
+  clickedListItem = item => {
+    this.listItemClick(item);
+  };
+
+  listItemClick = item => {
+    new Promise(resolve => {
+      this.setState({ clickedListItem: item });
+      resolve();
+    }).then(() => {
+      this.checkClickedListItem();
+    });
+  };
+
   render() {
+    // This funcion displays a list of locations
+    const renderLocations = this.state.allLocations.map((location, index) => {
+      return (
+        <li
+          key={index}
+          onClick={() => {
+            this.clickedListItem(location.venue.name);
+          }}
+        >
+          {location.venue.name}
+        </li>
+      );
+    });
     return (
       <div className="App">
         <div className="container-fluid">
           <div className="row">
-            <div className="col-md-4">
+            <div className="col-xs-12 col-md-8 order-md-12" id="map" />
+            <div className="col-xs-12 col-md-4 order-md-1">
               <h1>Neighborhood Map</h1>
-              <li>Marker 1</li>
-              <li>Marker 2</li>
-              <li>Marker 3</li>
-              <li>Marker 4</li>
+              <div className="input-group mb-3">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Filter the locations"
+                  // value={this.state.inputText}
+                  // onChange={this.onInputChange}
+                />
+              </div>
+              {renderLocations}
             </div>
-            <div id="map" className="col-md-8" />
           </div>
         </div>
       </div>
