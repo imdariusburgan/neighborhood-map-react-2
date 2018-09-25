@@ -148,6 +148,15 @@ class App extends Component {
     this.getFoursquareLocations();
   }
 
+  storeClickedListItem = item => {
+    new Promise(resolve => {
+      this.setState({ clickedListItem: item });
+      resolve();
+    }).then(() => {
+      this.checkClickedListItem();
+    });
+  };
+
   checkClickedListItem = () => {
     new Promise(resolve => {
       if (
@@ -160,20 +169,11 @@ class App extends Component {
       this.state.allMapMarkers.map(marker => {
         if (this.state.clickedListItem === marker.title) {
           this.markerAnimationTrigger(marker);
-          this.state.infoWindow.setContent(marker.title);
           this.state.infoWindow.open(this.state.map, marker);
+          this.state.infoWindow.setContent(marker.title);
         }
         return null;
       });
-    });
-  };
-
-  storeClickedListItem = item => {
-    new Promise(resolve => {
-      this.setState({ clickedListItem: item });
-      resolve();
-    }).then(() => {
-      this.checkClickedListItem();
     });
   };
 
