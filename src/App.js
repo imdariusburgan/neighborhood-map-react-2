@@ -24,7 +24,8 @@ class App extends Component {
   state = {
     allLocations: [],
     map: {},
-    mapMarkers: [],
+    allMapMarkers: [],
+    activeMarker: {},
     clickedListItem: ""
   };
 
@@ -84,8 +85,6 @@ class App extends Component {
         infowindow.open(map, marker);
       });
 
-      // I'm going to have to pass each location to another function in order to generate the list of markers, as well as trigger map marker animations when the corresponding list item is clicked
-
       return null;
     });
 
@@ -99,6 +98,9 @@ class App extends Component {
       marker.setAnimation(null);
     } else {
       marker.setAnimation(window.google.maps.Animation.BOUNCE);
+      setTimeout(() => {
+        marker.setAnimation(null);
+      }, 500);
     }
   };
 
@@ -147,12 +149,12 @@ class App extends Component {
     new Promise(resolve => {
       if (
         this.state.clickedListItem !== "" &&
-        this.state.mapMarkers.length > 0
+        this.state.allMapMarkers.length > 0
       ) {
         resolve();
       }
     }).then(() => {
-      this.state.mapMarkers.map(marker => {
+      this.state.allMapMarkers.map(marker => {
         if (this.state.clickedListItem === marker.title) {
           this.markerAnimationTrigger(marker);
         }
@@ -161,11 +163,7 @@ class App extends Component {
     });
   };
 
-  clickedListItem = item => {
-    this.listItemClick(item);
-  };
-
-  listItemClick = item => {
+  storeClickedListItem = item => {
     new Promise(resolve => {
       this.setState({ clickedListItem: item });
       resolve();
@@ -181,7 +179,7 @@ class App extends Component {
         <li
           key={index}
           onClick={() => {
-            this.clickedListItem(location.venue.name);
+            this.storeClickedListItem(location.venue.name);
           }}
         >
           {location.venue.name}
