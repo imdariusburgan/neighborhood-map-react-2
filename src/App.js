@@ -144,10 +144,6 @@ class App extends Component {
       });
   };
 
-  componentDidMount() {
-    this.getFoursquareLocations();
-  }
-
   storeClickedListItem = item => {
     new Promise(resolve => {
       this.setState({ clickedListItem: item });
@@ -176,6 +172,10 @@ class App extends Component {
       });
     });
   };
+
+  componentDidMount() {
+    this.getFoursquareLocations();
+  }
 
   render() {
     // This funcion displays a list of locations
