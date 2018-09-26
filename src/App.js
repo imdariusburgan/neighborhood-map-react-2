@@ -22,11 +22,14 @@ function loadCssTag(url) {
 
 class App extends Component {
   state = {
+    locationsReference: [],
     allLocations: [],
     map: {},
     allMapMarkers: [],
     activeMarker: {},
-    clickedListItem: ""
+    infoWindowVisibile: false,
+    clickedListItem: "",
+    inputText: ""
   };
 
   // This function loads the Google Maps API script tag
@@ -52,7 +55,7 @@ class App extends Component {
       zoom: 12
     });
     createMap.addListener("click", () => {
-      console.log("map was clicked");
+      this.onMapClick();
     });
     this.setState({ map: createMap });
     this.createMarkers(createMap);
@@ -83,6 +86,7 @@ class App extends Component {
         this.markerAnimationTrigger(marker);
         infowindow.setContent(location.venue.name);
         infowindow.open(map, marker);
+        this.setState({ infoWindowVisibile: true, activeMarker: marker });
       });
 
       return null;
@@ -92,8 +96,6 @@ class App extends Component {
     this.setState({ allMapMarkers: allCurrentMarkers });
     this.setState({ infoWindow: infowindow });
   };
-
-  markerInfo;
 
   // This function sets a marker's animation if there is none.
   markerAnimationTrigger = marker => {
@@ -105,6 +107,10 @@ class App extends Component {
         marker.setAnimation(null);
       }, 500);
     }
+  };
+
+  onMapClick = () => {
+    this.state.infoWindow.close();
   };
 
   getFoursquareLocations = () => {
@@ -132,6 +138,7 @@ class App extends Component {
       })
       // Take the location data from the JSON and store it in the state
       .then(data => {
+        this.setState({ locationsReference: data.response.groups[0].items });
         this.setState({ allLocations: data.response.groups[0].items });
       })
       // Once locations are stored in the state, load the map
@@ -167,10 +174,34 @@ class App extends Component {
           this.markerAnimationTrigger(marker);
           this.state.infoWindow.open(this.state.map, marker);
           this.state.infoWindow.setContent(marker.title);
+          this.setState({ infoWindowVisibile: true });
         }
         return null;
       });
     });
+  };
+
+  // This function takes the query of the the input field,
+  // changes the state's 'inputText' variable to match the input's query,
+  // and then passes the query to the passFilterText function
+  onInputChange = e => {
+    let inputQuery = e.target.value;
+    this.setState({ inputText: inputQuery });
+    this.filterList(inputQuery);
+  };
+
+  filterList = filterText => {
+    if (filterText.length > 0) {
+      this.setState({
+        allLocations: this.state.locationsReference.filter(location => {
+          return location.venue.name
+            .toLowerCase()
+            .includes(filterText.trim().toLowerCase());
+        })
+      });
+    } else {
+      this.setState({ allLocations: this.state.locationsReference });
+    }
   };
 
   componentDidMount() {
@@ -203,8 +234,8 @@ class App extends Component {
                   className="form-control"
                   type="text"
                   placeholder="Filter the locations"
-                  // value={this.state.inputText}
-                  // onChange={this.onInputChange}
+                  value={this.state.inputText}
+                  onChange={this.onInputChange}
                 />
               </div>
               {renderLocations}
