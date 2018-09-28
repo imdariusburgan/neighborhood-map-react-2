@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
+import GoogleMaps from "./components/GoogleMaps";
 
 // This function will load scripts in the DOM
 // This code was inspired from https://stackoverflow.com/questions/42847126/script-load-in-react
@@ -32,86 +33,9 @@ class App extends Component {
     inputText: ""
   };
 
-  // This function loads the Google Maps API script tag
-  loadTags = () => {
-    loadCssTag(
-      "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-    );
-    loadScriptTag(
-      "https://maps.googleapis.com/maps/api/js?key=AIzaSyDwmWMef1tFyoOOz8DiWqZdVwetRP6TemQ&callback=initMap"
-    );
-    // The script tag url above was searching for the 'initMap' callback function in the window object.
-    // This line sets the window object's 'initMap' function to match our 'initMap' function
-    window.initMap = this.initMap;
-  };
-
-  /************************************************
-   * THIS FUNCTION INITIALIZES THE GOOGLE MAP
-   ************************************************/
-  initMap = () => {
-    const cleveland = { lat: 41.505493, lng: -81.68129 };
-    let createMap = new window.google.maps.Map(document.getElementById("map"), {
-      center: cleveland,
-      zoom: 12
-    });
-    createMap.addListener("click", () => {
-      this.onMapClick();
-    });
-    this.setState({ map: createMap });
-    this.createMarkers(createMap);
-  };
-
-  /************************************************
-   * THIS FUNCTION ADDS THE MARKERS TO THE MAP
-   ************************************************/
-  createMarkers = map => {
-    let allCurrentMarkers = [];
-    // This part of the initMap function sets the markers
-    this.state.allLocations.map(location => {
-      // This part creates the markers
-      let marker = new window.google.maps.Marker({
-        map: map,
-        position: {
-          lat: location.venue.location.lat,
-          lng: location.venue.location.lng
-        },
-        title: location.venue.name,
-        animation: null
-      });
-
-      allCurrentMarkers.push(marker);
-
-      // This part adds a click event listener to marker
-      marker.addListener("click", () => {
-        this.markerAnimationTrigger(marker);
-        infowindow.setContent(location.venue.name);
-        infowindow.open(map, marker);
-        this.setState({ infoWindowVisibile: true, activeMarker: marker });
-      });
-
-      return null;
-    });
-
-    let infowindow = new window.google.maps.InfoWindow();
-    this.setState({ allMapMarkers: allCurrentMarkers });
-    this.setState({ infoWindow: infowindow });
-  };
-
-  // This function sets a marker's animation if there is none.
-  markerAnimationTrigger = marker => {
-    if (marker.getAnimation() !== null) {
-      marker.setAnimation(null);
-    } else {
-      marker.setAnimation(window.google.maps.Animation.BOUNCE);
-      setTimeout(() => {
-        marker.setAnimation(null);
-      }, 500);
-    }
-  };
-
-  onMapClick = () => {
-    this.state.infoWindow.close();
-  };
+  componentDidMount() {
+    this.getFoursquareLocations();
+  }
 
   getFoursquareLocations = () => {
     const parameters = {
@@ -149,6 +73,89 @@ class App extends Component {
       .catch(error => {
         console.log(`There was an error: ${error}`);
       });
+  };
+
+  // This function loads the Google Maps API script tag
+  loadTags = () => {
+    loadCssTag(
+      "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    );
+    loadScriptTag(
+      "https://maps.googleapis.com/maps/api/js?key=AIzaSyDwmWMef1tFyoOOz8DiWqZdVwetRP6TemQ&callback=initMap"
+    );
+    // The script tag url above was searching for the 'initMap' callback function in the window object.
+    // This line sets the window object's 'initMap' function to match our 'initMap' function
+    window.initMap = this.initMap;
+  };
+
+  /************************************************
+   * THIS FUNCTION INITIALIZES THE GOOGLE MAP
+   ************************************************/
+  initMap = () => {
+    const cleveland = { lat: 41.505493, lng: -81.68129 };
+    let createMap = new window.google.maps.Map(document.getElementById("map"), {
+      center: cleveland,
+      zoom: 12
+    });
+    createMap.addListener("click", () => {
+      this.onMapClick();
+    });
+    this.setState({ map: createMap });
+    this.createMarkers(createMap);
+  };
+
+  /************************************************
+   * THIS FUNCTION ADDS THE MARKERS TO THE MAP
+   ************************************************/
+  createMarkers = map => {
+    if (this.state.map !== {}) {
+      let allCurrentMarkers = [];
+      // This part of the initMap function sets the markers
+      this.state.allLocations.map(location => {
+        // This part creates the markers
+        let marker = new window.google.maps.Marker({
+          //  map: map,
+          position: {
+            lat: location.venue.location.lat,
+            lng: location.venue.location.lng
+          },
+          title: location.venue.name,
+          animation: null
+        });
+
+        allCurrentMarkers.push(marker);
+
+        // This part adds a click event listener to marker
+        marker.addListener("click", () => {
+          this.markerAnimationTrigger(marker);
+          infowindow.setContent(location.venue.name);
+          infowindow.open(map, marker);
+          this.setState({ infoWindowVisibile: true, activeMarker: marker });
+        });
+
+        return null;
+      });
+
+      let infowindow = new window.google.maps.InfoWindow();
+      this.setState({ allMapMarkers: allCurrentMarkers });
+      this.setState({ infoWindow: infowindow });
+    }
+  };
+
+  // This function sets a marker's animation if there is none.
+  markerAnimationTrigger = marker => {
+    if (marker.getAnimation() !== null) {
+      marker.setAnimation(null);
+    } else {
+      marker.setAnimation(window.google.maps.Animation.BOUNCE);
+      setTimeout(() => {
+        marker.setAnimation(null);
+      }, 500);
+    }
+  };
+
+  onMapClick = () => {
+    this.state.infoWindow.close();
   };
 
   storeClickedListItem = item => {
@@ -199,14 +206,24 @@ class App extends Component {
             .includes(filterText.trim().toLowerCase());
         })
       });
+      this.state.allMapMarkers.map(marker => {
+        if (
+          marker.title
+            .toLowerCase()
+            .includes(filterText.trim().toLowerCase()) === false
+        ) {
+          marker.setMap(null);
+        } else {
+          marker.setMap(this.state.map);
+        }
+      });
     } else {
       this.setState({ allLocations: this.state.locationsReference });
+      this.state.allMapMarkers.map(marker => {
+        marker.setMap(this.state.map);
+      });
     }
   };
-
-  componentDidMount() {
-    this.getFoursquareLocations();
-  }
 
   render() {
     // This funcion displays a list of locations
@@ -226,7 +243,10 @@ class App extends Component {
       <div className="App">
         <div className="container-fluid">
           <div className="row">
-            <div className="col-xs-12 col-md-8 order-md-12" id="map" />
+            <GoogleMaps
+              map={this.state.map}
+              markers={this.state.allMapMarkers}
+            />
             <div className="col-xs-12 col-md-4 order-md-1">
               <h1>Neighborhood Map</h1>
               <div className="input-group mb-3">
