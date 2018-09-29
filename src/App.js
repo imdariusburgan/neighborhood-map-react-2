@@ -199,6 +199,7 @@ class App extends Component {
 
   filterList = filterText => {
     if (filterText.length > 0) {
+      this.state.infoWindow.close();
       this.setState({
         allLocations: this.state.locationsReference.filter(location => {
           return location.venue.name
@@ -216,11 +217,13 @@ class App extends Component {
         } else {
           marker.setMap(this.state.map);
         }
+        return null;
       });
     } else {
       this.setState({ allLocations: this.state.locationsReference });
       this.state.allMapMarkers.map(marker => {
         marker.setMap(this.state.map);
+        return null;
       });
     }
   };
