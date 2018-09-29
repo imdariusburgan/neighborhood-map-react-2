@@ -128,7 +128,13 @@ class App extends Component {
         // This part adds a click event listener to marker
         marker.addListener("click", () => {
           this.markerAnimationTrigger(marker);
-          infowindow.setContent(location.venue.name);
+          infowindow.setContent(
+            `<div><h2>${
+              location.venue.name
+            }</h2></div><div><p class="info-description">This place is a ${
+              location.venue.categories[0].name
+            }</p></div>`
+          );
           infowindow.open(map, marker);
           this.setState({ infoWindowVisibile: true, activeMarker: marker });
         });
@@ -178,10 +184,21 @@ class App extends Component {
     }).then(() => {
       this.state.allMapMarkers.map(marker => {
         if (this.state.clickedListItem === marker.title) {
-          this.markerAnimationTrigger(marker);
-          this.state.infoWindow.open(this.state.map, marker);
-          this.state.infoWindow.setContent(marker.title);
-          this.setState({ infoWindowVisibile: true });
+          this.state.allLocations.map(location => {
+            if (marker.title === location.venue.name) {
+              this.markerAnimationTrigger(marker);
+              this.state.infoWindow.open(this.state.map, marker);
+              this.state.infoWindow.setContent(
+                `<div><h2>${
+                  location.venue.name
+                }</h2></div><div><p class="info-description">This place is a ${
+                  location.venue.categories[0].name
+                }</p></div>`
+              );
+              this.setState({ infoWindowVisibile: true });
+            }
+            return null;
+          });
         }
         return null;
       });
@@ -262,6 +279,12 @@ class App extends Component {
                 />
               </div>
               {renderLocations}
+              <div className="mt-4">
+                <p className="pt-4">
+                  All location data was provided via:{" "}
+                  <a href="https://foursquare.com/">Foursquare</a>
+                </p>
+              </div>
             </div>
           </div>
         </div>
