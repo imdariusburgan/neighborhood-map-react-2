@@ -13,7 +13,12 @@ export default class GoogleMaps extends Component {
   render() {
     return (
       <React.Fragment>
-        <div className="col-xs-12 col-md-8 order-md-12" id="map" />
+        <div
+          tabIndex="-1"
+          className="col-xs-12 col-md-8 order-md-12"
+          role="application"
+          id="map"
+        />
       </React.Fragment>
     );
   }
