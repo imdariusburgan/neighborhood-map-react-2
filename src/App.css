@@ -11,3 +11,13 @@
 .info-description {
   font-size: 18px;
 }
+.filterLabel {
+  display: none;
+}
+.foursqaureAttribution {
+  font-size: 14px;
+}
+.redText {
+  color: #7b030e;
+  font-weight: 700;
+}
