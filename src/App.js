@@ -100,6 +100,16 @@ class App extends Component {
     createMap.addListener("click", () => {
       this.onMapClick();
     });
+    // Sets the alt tag of Google Map's images and tabindex of Google Map
+    createMap.addListener("tilesloaded", function() {
+      let images = document.querySelectorAll("#map img");
+
+      images.forEach(image => {
+        image.alt = "Google Maps Image";
+      });
+
+      document.querySelector("#map .gm-style").setAttribute("tabindex", "-1");
+    });
     this.setState({ map: createMap });
     this.createMarkers(createMap);
   };
@@ -143,6 +153,9 @@ class App extends Component {
       });
 
       let infowindow = new window.google.maps.InfoWindow();
+      // If this state info window is visible
+      // set info window tab index to 0
+      // else set tab index to -1
       this.setState({ allMapMarkers: allCurrentMarkers });
       this.setState({ infoWindow: infowindow });
     }
@@ -251,16 +264,21 @@ class App extends Component {
       return (
         <li
           key={index}
+          tabIndex="0"
+          onKeyPress={() => {
+            this.storeClickedListItem(location.venue.name);
+          }}
           onClick={() => {
             this.storeClickedListItem(location.venue.name);
           }}
+          role="button"
         >
           {location.venue.name}
         </li>
       );
     });
     return (
-      <div className="App">
+      <div role="main" className="App">
         <div className="container-fluid">
           <div className="row">
             <GoogleMaps
@@ -269,8 +287,12 @@ class App extends Component {
             />
             <div className="col-xs-12 col-md-4 order-md-1">
               <h1>Neighborhood Map</h1>
-              <div className="input-group mb-3">
+              <div role="search" className="input-group mb-3">
+                <label className="filterLabel" htmlFor="filter">
+                  Filter the locations
+                </label>
                 <input
+                  id="filter"
                   className="form-control"
                   type="text"
                   placeholder="Filter the locations"
@@ -280,9 +302,11 @@ class App extends Component {
               </div>
               {renderLocations}
               <div className="mt-4">
-                <p className="pt-4">
+                <p className="pt-4 foursqaureAttribution">
                   All location data was provided via:{" "}
-                  <a href="https://foursquare.com/">Foursquare</a>
+                  <a href="https://foursquare.com/">
+                    <span className="redText">Foursquare</span>
+                  </a>
                 </p>
               </div>
             </div>
