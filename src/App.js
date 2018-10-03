@@ -173,14 +173,15 @@ class App extends Component {
   };
 
   // Close the info window
-  // Update the infoWindowVisible
+  // Then update the infoWindowVisible state
   closeInfoWindow = () => {
     this.state.infoWindow.close();
     this.setState({ infoWindowVisible: false });
     //this.state.infoWindowCloseButton.setAttribute("tabindex", "-1");
   };
 
-  // This function sets a marker's animation if there is none.
+  // Remove a marker's animation if it has an animation
+  // Add a marker animation if it doesn't have any
   markerAnimationTrigger = marker => {
     if (marker.getAnimation() !== null) {
       marker.setAnimation(null);
@@ -192,10 +193,13 @@ class App extends Component {
     }
   };
 
+  // Trigger the closeInfoWindow function
   onMapClick = () => {
     this.closeInfoWindow();
   };
 
+  // Store the clicked list item in the state
+  // Then trigger the checkClickedListItem function
   storeClickedListItem = item => {
     new Promise(resolve => {
       this.setState({ clickedListItem: item });
@@ -205,6 +209,9 @@ class App extends Component {
     });
   };
 
+  // Map over the current map markers
+  // If the clicked list item's title equals a marker's title,
+  // add animation to marker, open info window, and set the info window's content
   checkClickedListItem = () => {
     new Promise(resolve => {
       if (
@@ -247,14 +254,24 @@ class App extends Component {
     });
   };
 
-  // This function takes the query of the the input field,
-  // changes the state's 'inputText' variable to match the input's query,
-  // and then passes the query to the passFilterText function
+  // Take the query of the the input field,
+  // change the state's 'inputText' variable to match the input's query,
+  // and then pass the query to the filterList function
   onInputChange = e => {
     let inputQuery = e.target.value;
     this.setState({ inputText: inputQuery });
     this.filterList(inputQuery);
   };
+
+  // If the filterText string length is more than 0,
+  // close the info window,
+  // store locations that include text from the filterText string into the state.
+  //
+  // Then map over all of the map's markers,
+  // If a map's marker title  does not include text from the filterText string, remove it from the map
+  //
+  // if the filterText string length is not more than 0,
+  // Load all markers to the map.
 
   filterList = filterText => {
     if (filterText.length > 0) {
