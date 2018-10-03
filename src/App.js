@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import "./App.css";
 import GoogleMaps from "./components/GoogleMaps";
 
-// This function will load scripts in the DOM
 // This code was inspired from https://stackoverflow.com/questions/42847126/script-load-in-react
+// This function will load scripts in the DOM
 function loadScriptTag(url) {
   let scriptTag = document.createElement("script");
   scriptTag.src = url;
@@ -29,6 +29,7 @@ class App extends Component {
     allMapMarkers: [],
     activeMarker: {},
     infoWindowVisibile: false,
+    //infoWindowCloseButton: null,
     clickedListItem: "",
     inputText: ""
   };
@@ -120,6 +121,11 @@ class App extends Component {
   createMarkers = map => {
     if (this.state.map !== {}) {
       let allCurrentMarkers = [];
+      let infowindow = new window.google.maps.InfoWindow();
+      this.setState({ infoWindow: infowindow });
+      infowindow.addListener("closeclick", () => {
+        this.setState({ infoWindowVisibile: false });
+      });
       // This part of the initMap function sets the markers
       this.state.allLocations.map(location => {
         // This part creates the markers
@@ -138,27 +144,39 @@ class App extends Component {
         // This part adds a click event listener to marker
         marker.addListener("click", () => {
           this.markerAnimationTrigger(marker);
+          this.setState({ infoWindowVisibile: true, activeMarker: marker });
           infowindow.setContent(
-            `<div><h2>${
-              location.venue.name
-            }</h2></div><div><p class="info-description">This place is a ${
+            `<div><h2 tabindex='${
+              this.state.infoWindowVisibile === true ? "0" : "-1"
+            }'>${location.venue.name}</h2></div><div><p tabindex='${
+              this.state.infoWindowVisibile === true ? "0" : "-1"
+            }' class="info-description">This place is a ${
               location.venue.categories[0].name
             }</p></div>`
           );
           infowindow.open(map, marker);
-          this.setState({ infoWindowVisibile: true, activeMarker: marker });
+
+          // this.setState({
+          //   infoWindowCloseButton: document.querySelector("#map .gm-style-iw")
+          //     .parentNode.children[2]
+          // });
+          // this.state.infoWindowCloseButton.setAttribute("tabindex", "0");
         });
 
         return null;
       });
 
-      let infowindow = new window.google.maps.InfoWindow();
       // If this state info window is visible
       // set info window tab index to 0
       // else set tab index to -1
       this.setState({ allMapMarkers: allCurrentMarkers });
-      this.setState({ infoWindow: infowindow });
     }
+  };
+
+  closeInfoWindow = () => {
+    this.state.infoWindow.close();
+    this.setState({ infoWindowVisibile: false });
+    //this.state.infoWindowCloseButton.setAttribute("tabindex", "-1");
   };
 
   // This function sets a marker's animation if there is none.
@@ -174,7 +192,7 @@ class App extends Component {
   };
 
   onMapClick = () => {
-    this.state.infoWindow.close();
+    this.closeInfoWindow();
   };
 
   storeClickedListItem = item => {
@@ -201,14 +219,24 @@ class App extends Component {
             if (marker.title === location.venue.name) {
               this.markerAnimationTrigger(marker);
               this.state.infoWindow.open(this.state.map, marker);
+              this.setState({ infoWindowVisibile: true });
+              // this.setState({
+              //   infoWindowCloseButton: document.querySelector(
+              //     "#map .gm-style-iw"
+              //   )
+              // });
+              // document
+              //   .querySelector("#map .gm-style-iw")
+              //   .setAttribute("tabindex", "0");
               this.state.infoWindow.setContent(
-                `<div><h2>${
-                  location.venue.name
-                }</h2></div><div><p class="info-description">This place is a ${
+                `<div><h2 tabindex='${
+                  this.state.infoWindowVisibile === true ? "0" : "-1"
+                }'>${location.venue.name}</h2></div><div><p tabindex='${
+                  this.state.infoWindowVisibile === true ? "0" : "-1"
+                }' class="info-description">This place is a ${
                   location.venue.categories[0].name
                 }</p></div>`
               );
-              this.setState({ infoWindowVisibile: true });
             }
             return null;
           });
@@ -229,7 +257,7 @@ class App extends Component {
 
   filterList = filterText => {
     if (filterText.length > 0) {
-      this.state.infoWindow.close();
+      this.closeInfoWindow();
       this.setState({
         allLocations: this.state.locationsReference.filter(location => {
           return location.venue.name
