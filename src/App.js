@@ -12,7 +12,7 @@ function loadScriptTag(url) {
   document.body.appendChild(scriptTag);
 }
 
-// This function will load css in the DOM
+// This function will load css tags in the DOM
 function loadCssTag(url) {
   let cssTag = document.createElement("link");
   cssTag.rel = "stylesheet";
@@ -28,7 +28,7 @@ class App extends Component {
     map: {},
     allMapMarkers: [],
     activeMarker: {},
-    infoWindowVisibile: false,
+    infoWindowVisible: false,
     //infoWindowCloseButton: null,
     clickedListItem: "",
     inputText: ""
@@ -38,6 +38,8 @@ class App extends Component {
     this.getFoursquareLocations();
   }
 
+  // Fetch the location data from Foursquare
+  // Store the data in the state
   getFoursquareLocations = () => {
     const parameters = {
       clientID: "EPYY3NEHXV02O5I1VVCTDKHCN2B3BYSVVKYIPGKGZUAEFXHL",
@@ -76,7 +78,7 @@ class App extends Component {
       });
   };
 
-  // This function loads the Google Maps API script tag
+  // Load the bootstrap css and Google Maps script tag
   loadTags = () => {
     loadCssTag(
       "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
@@ -89,9 +91,8 @@ class App extends Component {
     window.initMap = this.initMap;
   };
 
-  /************************************************
-   * THIS FUNCTION INITIALIZES THE GOOGLE MAP
-   ************************************************/
+  // Initialize the map
+  // Then call the createMarkers function
   initMap = () => {
     const cleveland = { lat: 41.505493, lng: -81.68129 };
     let createMap = new window.google.maps.Map(document.getElementById("map"), {
@@ -115,16 +116,14 @@ class App extends Component {
     this.createMarkers(createMap);
   };
 
-  /************************************************
-   * THIS FUNCTION ADDS THE MARKERS TO THE MAP
-   ************************************************/
+  // Turn the location data from from the state into markers
   createMarkers = map => {
     if (this.state.map !== {}) {
       let allCurrentMarkers = [];
       let infowindow = new window.google.maps.InfoWindow();
       this.setState({ infoWindow: infowindow });
       infowindow.addListener("closeclick", () => {
-        this.setState({ infoWindowVisibile: false });
+        this.setState({ infoWindowVisible: false });
       });
       // This part of the initMap function sets the markers
       this.state.allLocations.map(location => {
@@ -144,12 +143,12 @@ class App extends Component {
         // This part adds a click event listener to marker
         marker.addListener("click", () => {
           this.markerAnimationTrigger(marker);
-          this.setState({ infoWindowVisibile: true, activeMarker: marker });
+          this.setState({ infoWindowVisible: true, activeMarker: marker });
           infowindow.setContent(
             `<div><h2 tabindex='${
-              this.state.infoWindowVisibile === true ? "0" : "-1"
+              this.state.infoWindowVisible === true ? "0" : "-1"
             }'>${location.venue.name}</h2></div><div><p tabindex='${
-              this.state.infoWindowVisibile === true ? "0" : "-1"
+              this.state.infoWindowVisible === true ? "0" : "-1"
             }' class="info-description">This place is a ${
               location.venue.categories[0].name
             }</p></div>`
@@ -173,9 +172,11 @@ class App extends Component {
     }
   };
 
+  // Close the info window
+  // Update the infoWindowVisible
   closeInfoWindow = () => {
     this.state.infoWindow.close();
-    this.setState({ infoWindowVisibile: false });
+    this.setState({ infoWindowVisible: false });
     //this.state.infoWindowCloseButton.setAttribute("tabindex", "-1");
   };
 
@@ -219,7 +220,7 @@ class App extends Component {
             if (marker.title === location.venue.name) {
               this.markerAnimationTrigger(marker);
               this.state.infoWindow.open(this.state.map, marker);
-              this.setState({ infoWindowVisibile: true });
+              this.setState({ infoWindowVisible: true });
               // this.setState({
               //   infoWindowCloseButton: document.querySelector(
               //     "#map .gm-style-iw"
@@ -230,9 +231,9 @@ class App extends Component {
               //   .setAttribute("tabindex", "0");
               this.state.infoWindow.setContent(
                 `<div><h2 tabindex='${
-                  this.state.infoWindowVisibile === true ? "0" : "-1"
+                  this.state.infoWindowVisible === true ? "0" : "-1"
                 }'>${location.venue.name}</h2></div><div><p tabindex='${
-                  this.state.infoWindowVisibile === true ? "0" : "-1"
+                  this.state.infoWindowVisible === true ? "0" : "-1"
                 }' class="info-description">This place is a ${
                   location.venue.categories[0].name
                 }</p></div>`
