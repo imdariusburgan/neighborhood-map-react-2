@@ -2,6 +2,10 @@
 
 This project allows you to view several food locations in Cleveland, OH. This was built using React and the Google Maps API.
 
+## App Preview
+
+![Udacity Neighborhood Map Screenshot](https://github.com/imdariusburgan/neighborhood-map-react-2/blob/master/screenshot.PNG)
+
 ## How To Run This App Locally:
 
 1. Download or clone this project's repository.
