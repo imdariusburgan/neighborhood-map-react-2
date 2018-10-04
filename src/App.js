@@ -34,6 +34,7 @@ class App extends Component {
     inputText: ""
   };
 
+  // Once the component mounts, trigger
   componentDidMount() {
     this.getFoursquareLocations();
   }
@@ -272,7 +273,6 @@ class App extends Component {
   //
   // if the filterText string length is not more than 0,
   // Load all markers to the map.
-
   filterList = filterText => {
     if (filterText.length > 0) {
       this.closeInfoWindow();
