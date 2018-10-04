@@ -14,10 +14,10 @@ This project allows you to view several food locations in Cleveland, OH. This wa
 
 ## Resources:
 
-[Loading scripts in React](https://stackoverflow.com/questions/42847126/script-load-in-react)
-[Google Maps API Documentation](https://developers.google.com/maps/documentation/javascript/tutorial)
-[Foursquare Places API](https://developer.foursquare.com/places-api)
-[Create React App NPM Package](https://www.npmjs.com/package/create-react-app)
+- [Loading scripts in React](https://stackoverflow.com/questions/42847126/script-load-in-react)
+- [Google Maps API Documentation](https://developers.google.com/maps/documentation/javascript/tutorial)
+- [Foursquare Places API](https://developer.foursquare.com/places-api)
+- [Create React App NPM Package](https://www.npmjs.com/package/create-react-app)
 
 ## License:
 
