@@ -18,6 +18,7 @@ This project allows you to view several food locations in Cleveland, OH. This wa
 - [Google Maps API Documentation](https://developers.google.com/maps/documentation/javascript/tutorial)
 - [Foursquare Places API](https://developer.foursquare.com/places-api)
 - [Create React App NPM Package](https://www.npmjs.com/package/create-react-app)
+- [Bootstrap](https://getbootstrap.com/docs/4.1/layout/overview/)
 
 ## License:
 
