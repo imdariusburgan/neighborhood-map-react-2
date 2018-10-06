@@ -9,6 +9,9 @@ function loadScriptTag(url) {
   scriptTag.src = url;
   scriptTag.async = true;
   scriptTag.defer = true;
+  scriptTag.onerror = function() {
+    window.alert("Error! Google Maps API failed to load!");
+  };
   document.body.appendChild(scriptTag);
 }
 
@@ -34,9 +37,15 @@ class App extends Component {
     inputText: ""
   };
 
+  // This alerts an error if there's a problem with Google Map's authentication
+  gm_authFailure = () => {
+    window.alert("Google Maps Error!");
+  };
+
   // Once the component mounts, trigger
   componentDidMount() {
     this.getFoursquareLocations();
+    window.gm_authFailure = this.gm_authFailure;
   }
 
   // Fetch the location data from Foursquare
@@ -75,7 +84,7 @@ class App extends Component {
       })
       // Log errors if any
       .catch(error => {
-        console.log(`There was an error: ${error}`);
+        window.alert(`There was an error: ${error}`);
       });
   };
 
